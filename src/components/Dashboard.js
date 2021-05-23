@@ -1,8 +1,47 @@
-import React, { lazy } from "react";
+import React, { useEffect } from "react";
 import AddNewTask from "./AddNewTask";
+import { connect } from "react-redux";
+import {
+	dashboardAction,
+	taskListAction,
+	editTaskAction,
+	deleteTaskAction,
+} from "../store/actions/dashboard.actions";
 import { Pie } from "react-chartjs-2";
 
-function Dashboard() {
+function Dashboard({
+	dashboard,
+	taskList,
+	editTask,
+	deleteTask,
+	dashboardAction,
+	taskListAction,
+}) {
+	useEffect(() => {
+		dashboardAction();
+		taskListAction();
+	}, []);
+
+	let data = {
+		labels: [],
+		datasets: [
+			{
+				data: [],
+				backgroundColor: [
+					"rgba(54, 162, 235, 0.2)",
+					"rgba(255, 99, 132, 0.2)",
+				],
+			},
+		],
+	};
+
+	useEffect(() => {
+		data.datasets[0].data = [
+			dashboard.tasksCompleted,
+			dashboard.totalTasks,
+		];
+	}, [taskList, dashboard]);
+
 	const noRecordFound = () => {
 		const addNewTask = () => {
 			console.log("addnew as");
@@ -45,9 +84,12 @@ function Dashboard() {
 								<h5 className="card-title">Tasks Completed</h5>
 								<div className="pt-4">
 									<span className="display-4 text-primary font-bold">
-										5
+										{dashboard.tasksCompleted}
 									</span>
-									/<span className="card-text">20</span>
+									/
+									<span className="card-text">
+										{dashboard.totalTasks}
+									</span>
 								</div>
 							</div>
 						</div>
@@ -60,11 +102,19 @@ function Dashboard() {
 								</h5>
 
 								<ul>
-									<li>Task1</li>
-									<li>Task1</li>
-									<li>
-										<del>Task1</del>
-									</li>
+									{dashboard.latestTasks.map((task, index) =>
+										index < 7 ? (
+											task.completed ? (
+												<li key={index}>
+													<del>{task.name}</del>
+												</li>
+											) : (
+												<li key={index}>{task.name}</li>
+											)
+										) : (
+											""
+										)
+									)}
 								</ul>
 							</div>
 						</div>
@@ -84,19 +134,60 @@ function Dashboard() {
 		);
 	};
 
-	const data = {
-		labels: [],
-		datasets: [
-			{
-				data: [12, 19],
-				backgroundColor: [
-					"rgba(255, 99, 132, 0.2)",
-					"rgba(54, 162, 235, 0.2)",
-				],
-				borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
-				borderWidth: 1,
-			},
-		],
+	const deleteItem = (taskId) => {};
+	const editItem = (taskId) => {};
+
+	const tableDisplay = () => {
+		return (
+			<div className="task-list bg-white button-rd shadow">
+				{taskList.map((task, index) => (
+					<div className="row p-3" key={index}>
+						<div className="col-md-1">
+							<input className="" type="checkbox" />
+						</div>
+						{task.completed ? (
+							<div className="col-md-9 tasks-text">
+								<del> {task.name}</del>
+							</div>
+						) : (
+							<div className="col-md-9 tasks-text">
+								{task.name}
+							</div>
+						)}
+						<div className="col-md-1">
+							<div className="row">
+								<div className="col-md-6 pointer">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="16"
+										height="16"
+										fill="currentColor"
+										className="bi bi-pen-fill "
+										viewBox="0 0 16 16"
+										onClick={editItem(index)}
+									>
+										<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+									</svg>
+								</div>
+								<div className="col-md-6 pointer">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="16"
+										height="16"
+										fill="currentColor"
+										className="bi bi-trash-fill"
+										viewBox="0 0 16 16"
+										onClick={deleteItem(index)}
+									>
+										<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+									</svg>
+								</div>
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+		);
 	};
 
 	const DashboardWithRecord = () => {
@@ -143,90 +234,23 @@ function Dashboard() {
 						</div>
 					</div>
 				</div>
-				<div className="task-list bg-white button-rd shadow">
-					<div className="row p-3">
-						<div className="col-md-1">
-							<input className="" type="checkbox" />
-						</div>
-						<div className="col-md-9 tasks-text">
-							asdasdasdasdasd
-						</div>
-						<div className="col-md-1">
-							<div className="row">
-								<div className="col-md-6">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										fill="currentColor"
-										className="bi bi-pen-fill"
-										viewBox="0 0 16 16"
-									>
-										<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
-									</svg>
-								</div>
-								<div className="col-md-6">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										fill="currentColor"
-										className="bi bi-trash-fill"
-										viewBox="0 0 16 16"
-									>
-										<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-									</svg>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="row p-3">
-						<div className="col-md-1">
-							<input className="" type="checkbox" />
-						</div>
-						<div className="col-md-9 text-primary">
-							asdasdasdasdasd
-						</div>
-						<div className="col-md-1">
-							<div className="row">
-								<div className="col-md-6">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										fill="currentColor"
-										className="bi bi-pen-fill"
-										viewBox="0 0 16 16"
-									>
-										<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
-									</svg>
-								</div>
-								<div className="col-md-6">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										fill="currentColor"
-										className="bi bi-trash-fill"
-										viewBox="0 0 16 16"
-									>
-										<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-									</svg>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+				{tableDisplay()}
 			</>
 		);
 	};
-	return (
-		<>
-			{/* {noRecordFound()} */}
-			{/* <AddNewTask /> */}
-			{DashboardWithRecord()}
-		</>
-	);
+	return <>{taskList.length > 0 ? DashboardWithRecord() : noRecordFound()}</>;
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => ({
+	dashboard: state?.dashboard,
+	taskList: state.taskList.list,
+});
+
+const mapDispatchToProps = {
+	dashboardAction,
+	taskListAction,
+	editTaskAction,
+	deleteTaskAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
