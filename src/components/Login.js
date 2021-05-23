@@ -3,9 +3,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "../App.css";
 
-function Login() {
+function Login(props) {
 	const formSubmit = (values, { resetForm }) => {
 		console.log(values);
+		props.history.push("/dashboard");
 	};
 	return (
 		<div className="d-flex justify-content-center align-items-center container h-100 ">

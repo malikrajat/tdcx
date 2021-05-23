@@ -1,3 +1,6 @@
+* {
+	font-family: "Montserrat", sans-serif;
+}
 .button-rd {
 	border-radius: 8px;
 }
@@ -10,4 +13,26 @@
 }
 .error {
 	color: #eb4d65;
+	text-align: left;
+}
+.plus-icon {
+	padding-right: 3px;
+}
+.header-height {
+	height: 45px;
+}
+.font-bold {
+	font-weight: bold;
+}
+.pl-30 {
+	padding-left: 30px;
+}
+.search-icon {
+	position: absolute;
+	top: 12px;
+	left: 20px;
+}
+.tasks-text {
+	letter-spacing: 0px;
+	color: #5285ec;
 }

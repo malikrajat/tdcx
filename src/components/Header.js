@@ -7,34 +7,32 @@ function Header(props) {
 	const redirectToCart = (page) => {
 		props.history.push("/" + page);
 	};
+
+	const logout = () => {
+		console.log("logout");
+	};
 	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container-fluid">
-				<span className="navbar-brand mb-0 h1">
-					<button
-						type="button"
-						className="btn btn-outline-dark"
-						onClick={() => redirectToCart("")}
-					>
-						Home
-					</button>
+		<nav className="navbar navbar-light bg-white shadow-lg mb-4">
+			<div className="container container-fluid">
+				<span className="navbar-brand">
+					<img
+						className="rounded-circle me-3 header-height"
+						alt="100x100"
+						src="https://mdbootstrap.com/img/Photos/Avatars/img%20(30).jpg"
+						data-holder-rendered="true"
+					/>
+					<span className="">ALI</span>
 				</span>
-				<button
-					type="button"
-					className="btn btn-outline-dark"
-					onClick={() => redirectToCart("orders")}
+
+				<a
+					href="#"
+					className="text-secondary text-decoration-none"
+					onClick={logout}
 				>
-					Orders
-				</button>
-				<button
-					type="button"
-					className="btn btn-outline-dark"
-					onClick={() => redirectToCart("cart")}
-				>
-					Cart
-				</button>
+					Logout
+				</a>
 			</div>
 		</nav>
 	);
 }
-export default withRouter(Header);
+export default Header;
