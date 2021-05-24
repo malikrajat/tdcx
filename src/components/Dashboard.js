@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
-import AddNewTask from "./AddNewTask";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
 	dashboardAction,
 	taskListAction,
 	editTaskAction,
 	deleteTaskAction,
+	updateTaskAction,
 } from "../store/actions/dashboard.actions";
 import { Pie } from "react-chartjs-2";
 
 function Dashboard({
 	dashboard,
 	taskList,
-	editTask,
-	deleteTask,
+	editTaskAction,
+	deleteTaskAction,
 	dashboardAction,
 	taskListAction,
+	updateTaskAction,
+	history,
 }) {
+	const [taskArray, settaskArray] = useState([]);
 	useEffect(() => {
 		dashboardAction();
 		taskListAction();
@@ -35,16 +38,32 @@ function Dashboard({
 		],
 	};
 
+	const searchData = (e) => {
+		let search = e.target.value;
+		if (search.length > 3) {
+			let task = taskList.filter((task) => {
+				return task.name.toUpperCase().includes(search.toUpperCase());
+			});
+			settaskArray(task);
+		}
+		if (search.length < 1) {
+			let task = JSON.parse(JSON.stringify(taskList));
+			settaskArray(task);
+		}
+	};
+
 	useEffect(() => {
 		data.datasets[0].data = [
 			dashboard.tasksCompleted,
 			dashboard.totalTasks,
 		];
+		let task = JSON.parse(JSON.stringify(taskList));
+		settaskArray(task);
 	}, [taskList, dashboard]);
 
 	const noRecordFound = () => {
 		const addNewTask = () => {
-			console.log("addnew as");
+			history.push("/add-task");
 		};
 		return (
 			<div className="d-flex justify-content-center align-items-center h-100 ">
@@ -102,18 +121,21 @@ function Dashboard({
 								</h5>
 
 								<ul>
-									{dashboard.latestTasks.map((task, index) =>
-										index < 7 ? (
-											task.completed ? (
-												<li key={index}>
-													<del>{task.name}</del>
-												</li>
+									{dashboard?.latestTasks?.map(
+										(task, index) =>
+											index < 7 ? (
+												task.completed ? (
+													<li key={task._id}>
+														<del>{task.name}</del>
+													</li>
+												) : (
+													<li key={task._id}>
+														{task.name}
+													</li>
+												)
 											) : (
-												<li key={index}>{task.name}</li>
+												""
 											)
-										) : (
-											""
-										)
 									)}
 								</ul>
 							</div>
@@ -134,16 +156,32 @@ function Dashboard({
 		);
 	};
 
-	const deleteItem = (taskId) => {};
-	const editItem = (taskId) => {};
+	const deleteItem = (taskId) => {
+		deleteTaskAction(taskId);
+	};
+
+	const editItem = (taskId) => {
+		editTaskAction(taskId);
+	};
+	const updateStatus = (taskId, index) => {
+		let data = taskArray[index];
+		data.completed = !data.completed;
+
+		updateTaskAction(taskId, data);
+	};
 
 	const tableDisplay = () => {
 		return (
 			<div className="task-list bg-white button-rd shadow">
-				{taskList.map((task, index) => (
-					<div className="row p-3" key={index}>
+				{taskArray.map((task, index) => (
+					<div className="row p-3" key={task._id}>
 						<div className="col-md-1">
-							<input className="" type="checkbox" />
+							<input
+								className=""
+								type="checkbox"
+								defaultChecked={task?.completed}
+								onClick={() => updateStatus(task._id, index)}
+							/>
 						</div>
 						{task.completed ? (
 							<div className="col-md-9 tasks-text">
@@ -164,7 +202,7 @@ function Dashboard({
 										fill="currentColor"
 										className="bi bi-pen-fill "
 										viewBox="0 0 16 16"
-										onClick={editItem(index)}
+										onClick={() => editItem(task._id)}
 									>
 										<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
 									</svg>
@@ -177,7 +215,7 @@ function Dashboard({
 										fill="currentColor"
 										className="bi bi-trash-fill"
 										viewBox="0 0 16 16"
-										onClick={deleteItem(index)}
+										onClick={() => deleteItem(task._id)}
 									>
 										<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
 									</svg>
@@ -212,6 +250,7 @@ function Dashboard({
 								type="text"
 								className="form-control bg-light pl-30"
 								placeholder="Search by task name"
+								onChange={(e) => searchData(e)}
 							/>
 						</div>
 						<div className="col-md-4 mb-4">
@@ -251,6 +290,7 @@ const mapDispatchToProps = {
 	taskListAction,
 	editTaskAction,
 	deleteTaskAction,
+	updateTaskAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

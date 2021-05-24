@@ -3,10 +3,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import "../App.css";
 import { LogoutAction } from "../store/actions/login.actions";
+import { URL } from "../store/types";
 
 function Header({ user, history, LogoutAction }) {
 	function logout(e) {
-		console.log("asd");
 		e.preventDefault();
 		LogoutAction();
 		history.push("/");
@@ -19,10 +19,9 @@ function Header({ user, history, LogoutAction }) {
 					<div className="container container-fluid">
 						<span className="navbar-brand">
 							<img
-								className="rounded-circle me-3 header-height"
+								className="rounded-circle me-3 header-height w-48"
 								alt="100x100"
-								// src="https://mdbootstrap.com/img/Photos/Avatars/img%20(30).jpg"
-								src={user?.image}
+								src={URL + user?.image}
 								onError={(e) =>
 									(e.target.src =
 										"https://mdbootstrap.com/img/Photos/Avatars/img%20(30).jpg")

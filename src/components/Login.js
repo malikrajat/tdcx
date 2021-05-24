@@ -15,8 +15,6 @@ function Login({ LoginAction, isUserLogin, history }) {
 	const formSubmit = (credentials, { resetForm }) => {
 		LoginAction(credentials);
 		resetForm();
-		// console.log(values);
-		// props.history.push("/dashboard");
 	};
 	return (
 		<div className="d-flex justify-content-center align-items-center container h-100 ">

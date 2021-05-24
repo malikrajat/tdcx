@@ -1,11 +1,14 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { connect } from "react-redux";
+import { AddTaskAction } from "../store/actions/addTask.actions";
 
-function AddNewTask(props) {
+function AddNewTask({ AddTaskAction, history }) {
 	const formSubmit = (values, { resetForm }) => {
-		console.log(values);
-		props.history.push("/dashboard");
+		console.log(values.name);
+		AddTaskAction(values, history);
+		resetForm();
 	};
 	return (
 		<div className="d-flex justify-content-center align-items-center h-100 ">
@@ -23,7 +26,6 @@ function AddNewTask(props) {
 									<Field
 										type="text"
 										name="name"
-										autoFocus
 										className="form-control bg-light input-rd"
 										id="inputUserName"
 										aria-labelledby="emailnotification"
@@ -70,4 +72,9 @@ const TaskSchema = Yup.object().shape({
 const formInit = {
 	name: "",
 };
-export default AddNewTask;
+
+const mapDispatchToProps = {
+	AddTaskAction,
+};
+
+export default connect(null, mapDispatchToProps)(AddNewTask);

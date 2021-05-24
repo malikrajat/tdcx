@@ -1,30 +1,21 @@
 import axios from "axios";
-import { URL, TASKLIST, DASHBOARD, DELETETASK, EDITTASK } from "../types";
-import store from "../index";
+import { URL, TASKLIST, DASHBOARD, EDITTASK } from "../types";
 
+let config = {
+	headers: {
+		Authorization: "Bearer " + localStorage.getItem("login"),
+		"Content-Type": "application/json",
+	},
+};
 export const dashboardAction = () => async (dispatch) => {
 	try {
-		// const response = await axios.get(URL + "dashboard");
-		// console.log(response.data);
-		// if (response.data) {
-		// dispatch({
-		// 	type: DASHBOARD,
-		// 	payload: response.data,
-		// });
-		dispatch({
-			type: DASHBOARD,
-			payload: {
-				tasksCompleted: 10,
-				totalTasks: 19,
-				latestTasks: [
-					{
-						name: "Refactor something",
-						completed: false,
-					},
-				],
-			},
-		});
-		// }
+		const response = await axios.get(URL + "dashboard", config);
+		if (response.data) {
+			dispatch({
+				type: DASHBOARD,
+				payload: response.data,
+			});
+		}
 	} catch (error) {
 		console.error(error);
 	}
@@ -32,33 +23,24 @@ export const dashboardAction = () => async (dispatch) => {
 
 export const taskListAction = () => async (dispatch) => {
 	try {
-		// const response = await axios.get(URL + "tasks");
-		// if (response.data) {
-		// 	dispatch({
-		// 		type: TASKLIST,
-		// 		payload: response.data,
-		// 	});
-		// }
-
-		dispatch({
-			type: TASKLIST,
-			payload: {
-				list: [
-					{
-						name: "Refactor something",
-						completed: false,
-					},
-				],
-			},
-		});
+		const response = await axios.get(URL + "tasks", config);
+		if (response.data) {
+			let itemList = {
+				list: response.data.tasks,
+			};
+			dispatch({
+				type: TASKLIST,
+				payload: itemList,
+			});
+		}
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-export const editTaskAction = () => async (dispatch) => {
+export const editTaskAction = (taskId) => async (dispatch) => {
 	try {
-		// const response = await axios.get(URL + "tasks");
+		// const response = await axios.put(URL + "tasks/", taskId, );
 		// if (response.data) {
 		// 	dispatch({
 		// 		type: TASKLIST,
@@ -81,26 +63,24 @@ export const editTaskAction = () => async (dispatch) => {
 		console.error(error);
 	}
 };
+
 export const deleteTaskAction = (taskId) => async (dispatch) => {
 	try {
-		const response = await axios.get(URL + "tasks/" + taskId);
-		// if (response.data) {
-		// 	dispatch({
-		// 		type: TASKLIST,
-		// 		payload: response.data,
-		// 	});
-		// }
-		const storeData = store.getState();
-		let updatedStore = storeData.map(
-			(res) => res.name !== response.data.name
-		);
+		const response = await axios.delete(URL + "tasks/" + taskId, config);
+		if (response.data) {
+			dispatch(taskListAction());
+		}
+	} catch (error) {
+		console.error(error);
+	}
+};
 
-		dispatch({
-			type: DELETETASK,
-			payload: {
-				list: updatedStore,
-			},
-		});
+export const updateTaskAction = (taskId, data) => async (dispatch) => {
+	try {
+		const response = await axios.put(URL + "tasks/" + taskId, data, config);
+		if (response.data) {
+			dispatch(taskListAction());
+		}
 	} catch (error) {
 		console.error(error);
 	}

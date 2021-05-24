@@ -9,6 +9,7 @@ import store from "../store";
 const Login = lazy(() => import("./Login"));
 const Dashboard = lazy(() => import("./Dashboard"));
 const NotFound = lazy(() => import("./NotFound"));
+const AddNewTask = lazy(() => import("./AddNewTask"));
 
 const App = () => {
 	return (
@@ -20,6 +21,10 @@ const App = () => {
 						<div className="container">
 							<Switch>
 								<Route path="/" component={Login} exact />
+								<Route
+									path="/add-task"
+									component={AddNewTask}
+								/>
 								<Route
 									path="/dashboard"
 									component={Dashboard}
