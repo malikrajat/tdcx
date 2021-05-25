@@ -38,27 +38,13 @@ export const taskListAction = () => async (dispatch) => {
 	}
 };
 
-export const editTaskAction = (taskId) => async (dispatch) => {
+export const editTaskAction = (taskId, data) => async (dispatch) => {
 	try {
-		// const response = await axios.put(URL + "tasks/", taskId, );
-		// if (response.data) {
-		// 	dispatch({
-		// 		type: TASKLIST,
-		// 		payload: response.data,
-		// 	});
-		// }
-
-		dispatch({
-			type: EDITTASK,
-			payload: {
-				list: [
-					{
-						name: "Refactor something",
-						completed: false,
-					},
-				],
-			},
-		});
+		const response = await axios.put(URL + "tasks/" + taskId, data, config);
+		if (response.data) {
+			dispatch(taskListAction());
+			dispatch(dashboardAction());
+		}
 	} catch (error) {
 		console.error(error);
 	}
@@ -69,6 +55,7 @@ export const deleteTaskAction = (taskId) => async (dispatch) => {
 		const response = await axios.delete(URL + "tasks/" + taskId, config);
 		if (response.data) {
 			dispatch(taskListAction());
+			dispatch(dashboardAction());
 		}
 	} catch (error) {
 		console.error(error);
@@ -80,6 +67,7 @@ export const updateTaskAction = (taskId, data) => async (dispatch) => {
 		const response = await axios.put(URL + "tasks/" + taskId, data, config);
 		if (response.data) {
 			dispatch(taskListAction());
+			dispatch(dashboardAction());
 		}
 	} catch (error) {
 		console.error(error);

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import Modal from "react-modal";
+import AddNewTask from "./AddNewTask";
 import {
 	dashboardAction,
 	taskListAction,
@@ -8,6 +10,19 @@ import {
 	updateTaskAction,
 } from "../store/actions/dashboard.actions";
 import { Pie } from "react-chartjs-2";
+const customStyles = {
+	content: {
+		top: "50%",
+		left: "50%",
+		right: "auto",
+		bottom: "auto",
+		marginRight: "-50%",
+		transform: "translate(-50%, -50%)",
+		// position: "relative",
+	},
+};
+
+Modal.setAppElement("#model");
 
 function Dashboard({
 	dashboard,
@@ -19,7 +34,21 @@ function Dashboard({
 	updateTaskAction,
 	history,
 }) {
+	const [modalIsOpen, setIsOpen] = useState(false);
+	const [editTask, setEditTask] = useState("");
+
+	const openModal = () => {
+		setIsOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsOpen(false);
+		setEditTask("");
+		taskListAction();
+	};
+
 	const [taskArray, settaskArray] = useState([]);
+
 	useEffect(() => {
 		dashboardAction();
 		taskListAction();
@@ -160,9 +189,12 @@ function Dashboard({
 		deleteTaskAction(taskId);
 	};
 
-	const editItem = (taskId) => {
-		editTaskAction(taskId);
+	const editItem = (index) => {
+		const taskDetails = taskList[index];
+		setEditTask(taskDetails);
+		openModal();
 	};
+
 	const updateStatus = (taskId, index) => {
 		let data = taskArray[index];
 		data.completed = !data.completed;
@@ -202,7 +234,7 @@ function Dashboard({
 										fill="currentColor"
 										className="bi bi-pen-fill "
 										viewBox="0 0 16 16"
-										onClick={() => editItem(task._id)}
+										onClick={() => editItem(index)}
 									>
 										<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
 									</svg>
@@ -225,6 +257,29 @@ function Dashboard({
 					</div>
 				))}
 			</div>
+		);
+	};
+
+	const displayPopUp = () => {
+		const title = editTask?._id ? "edit" : "add";
+		const data = editTask?._id ? editTask.name : "";
+		return (
+			<Modal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				style={customStyles}
+				contentLabel="Add Task"
+			>
+				<span className="modelclose" onClick={closeModal}>
+					X
+				</span>
+
+				<AddNewTask
+					initialValues={data}
+					title={title}
+					task={editTask}
+				/>
+			</Modal>
 		);
 	};
 
@@ -257,6 +312,7 @@ function Dashboard({
 							<button
 								type="submit"
 								className="btn btn-primary btn-block w-100 button-rd"
+								onClick={() => openModal()}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -274,6 +330,8 @@ function Dashboard({
 					</div>
 				</div>
 				{tableDisplay()}
+
+				{displayPopUp()}
 			</>
 		);
 	};
