@@ -88,7 +88,7 @@ function Dashboard({
 		];
 		let task = JSON.parse(JSON.stringify(taskList));
 		settaskArray(task);
-	}, [taskList, dashboard]);
+	}, [taskList, dashboard, data.datasets]);
 
 	const noRecordFound = () => {
 		const addNewTask = () => {

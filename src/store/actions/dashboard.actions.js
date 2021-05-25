@@ -1,5 +1,5 @@
 import axios from "axios";
-import { URL, TASKLIST, DASHBOARD, EDITTASK } from "../types";
+import { URL, TASKLIST, DASHBOARD } from "../types";
 
 let config = {
 	headers: {
