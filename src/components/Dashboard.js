@@ -21,13 +21,16 @@ const customStyles = {
 		// position: "relative",
 	},
 };
-
-Modal.setAppElement("#model");
+try {
+	let el = document.getElementById("model");
+	Modal.setAppElement(el);
+} catch (error) {
+	console.log(error);
+}
 
 function Dashboard({
 	dashboard,
 	taskList,
-	editTaskAction,
 	deleteTaskAction,
 	dashboardAction,
 	taskListAction,
@@ -88,7 +91,7 @@ function Dashboard({
 		];
 		let task = JSON.parse(JSON.stringify(taskList));
 		settaskArray(task);
-	}, [taskList, dashboard, data.datasets]);
+	}, [taskList, dashboard]);
 
 	const noRecordFound = () => {
 		const addNewTask = () => {
@@ -278,6 +281,7 @@ function Dashboard({
 					initialValues={data}
 					title={title}
 					task={editTask}
+					closeModel={closeModal}
 				/>
 			</Modal>
 		);

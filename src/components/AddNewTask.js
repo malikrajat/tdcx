@@ -13,6 +13,7 @@ const AddNewTask = ({
 	initialValues,
 	title,
 	task,
+	closeModel,
 }) => {
 	const formSubmit = (values, { resetForm }) => {
 		if (title === "edit") {
@@ -20,6 +21,9 @@ const AddNewTask = ({
 			editTaskAction(task._id, task);
 		} else {
 			AddTaskAction(values, history);
+		}
+		if (closeModel) {
+			closeModel();
 		}
 		resetForm();
 	};
@@ -34,7 +38,7 @@ const AddNewTask = ({
 
 				<div className="text-center">
 					<Formik
-						initialValues={{ name: initialValues }}
+						initialValues={{ name: initialValues || "" }}
 						validationSchema={TaskSchema}
 						onSubmit={formSubmit}
 					>

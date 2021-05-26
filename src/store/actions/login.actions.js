@@ -4,7 +4,6 @@ import { URL, LOGIN } from "../types";
 export const LoginAction = (credentials) => async (dispatch) => {
 	try {
 		const response = await axios.post(URL + "login", credentials);
-		console.log(response.data);
 		if (response.data) {
 			localStorage.setItem("login", response.data.token.token);
 			dispatch({

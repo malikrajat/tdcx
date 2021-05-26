@@ -1,15 +1,9 @@
-import axios from "axios";
+import axios from "../../axios.config";
 import { URL, TASKLIST, DASHBOARD } from "../types";
 
-let config = {
-	headers: {
-		Authorization: "Bearer " + localStorage.getItem("login"),
-		"Content-Type": "application/json",
-	},
-};
 export const dashboardAction = () => async (dispatch) => {
 	try {
-		const response = await axios.get(URL + "dashboard", config);
+		const response = await axios.get(URL + "dashboard");
 		if (response.data) {
 			dispatch({
 				type: DASHBOARD,
@@ -23,7 +17,7 @@ export const dashboardAction = () => async (dispatch) => {
 
 export const taskListAction = () => async (dispatch) => {
 	try {
-		const response = await axios.get(URL + "tasks", config);
+		const response = await axios.get(URL + "tasks");
 		if (response.data) {
 			let itemList = {
 				list: response.data.tasks,
@@ -40,7 +34,7 @@ export const taskListAction = () => async (dispatch) => {
 
 export const editTaskAction = (taskId, data) => async (dispatch) => {
 	try {
-		const response = await axios.put(URL + "tasks/" + taskId, data, config);
+		const response = await axios.put(URL + "tasks/" + taskId, data);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());
@@ -52,7 +46,7 @@ export const editTaskAction = (taskId, data) => async (dispatch) => {
 
 export const deleteTaskAction = (taskId) => async (dispatch) => {
 	try {
-		const response = await axios.delete(URL + "tasks/" + taskId, config);
+		const response = await axios.delete(URL + "tasks/" + taskId);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());
@@ -64,7 +58,7 @@ export const deleteTaskAction = (taskId) => async (dispatch) => {
 
 export const updateTaskAction = (taskId, data) => async (dispatch) => {
 	try {
-		const response = await axios.put(URL + "tasks/" + taskId, data, config);
+		const response = await axios.put(URL + "tasks/" + taskId, data);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());
