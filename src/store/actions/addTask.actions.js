@@ -1,10 +1,9 @@
-import { URL } from "../types";
 import axios from "../../axios.config";
 import { taskListAction } from "./dashboard.actions";
 
 export const AddTaskAction = (task, history) => async () => {
 	try {
-		const response = await axios.post(URL + "tasks", task);
+		const response = await axios.post("tasks", task);
 		if (response.data) {
 			taskListAction();
 			history.push("/dashboard");

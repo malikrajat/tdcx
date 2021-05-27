@@ -3,7 +3,7 @@ import { URL, TASKLIST, DASHBOARD } from "../types";
 
 export const dashboardAction = () => async (dispatch) => {
 	try {
-		const response = await axios.get(URL + "dashboard");
+		const response = await axios.get("dashboard");
 		if (response.data) {
 			dispatch({
 				type: DASHBOARD,
@@ -17,7 +17,7 @@ export const dashboardAction = () => async (dispatch) => {
 
 export const taskListAction = () => async (dispatch) => {
 	try {
-		const response = await axios.get(URL + "tasks");
+		const response = await axios.get("tasks");
 		if (response.data) {
 			let itemList = {
 				list: response.data.tasks,
@@ -34,7 +34,7 @@ export const taskListAction = () => async (dispatch) => {
 
 export const editTaskAction = (taskId, data) => async (dispatch) => {
 	try {
-		const response = await axios.put(URL + "tasks/" + taskId, data);
+		const response = await axios.put("tasks/" + taskId, data);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());
@@ -46,7 +46,7 @@ export const editTaskAction = (taskId, data) => async (dispatch) => {
 
 export const deleteTaskAction = (taskId) => async (dispatch) => {
 	try {
-		const response = await axios.delete(URL + "tasks/" + taskId);
+		const response = await axios.delete("tasks/" + taskId);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());
@@ -58,7 +58,7 @@ export const deleteTaskAction = (taskId) => async (dispatch) => {
 
 export const updateTaskAction = (taskId, data) => async (dispatch) => {
 	try {
-		const response = await axios.put(URL + "tasks/" + taskId, data);
+		const response = await axios.put("tasks/" + taskId, data);
 		if (response.data) {
 			dispatch(taskListAction());
 			dispatch(dashboardAction());

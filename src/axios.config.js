@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const instance = Axios.create({
-	baseURL: "https://react-my-burger-5b5d3.firebaseio.com/",
+	baseURL: "https://dev-dl.tdcx.com:3092/",
 	timeout: 1000,
 	headers: {
 		Authorization: "Bearer " + localStorage.getItem("login"),

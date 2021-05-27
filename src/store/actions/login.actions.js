@@ -1,9 +1,9 @@
-import axios from "axios";
-import { URL, LOGIN } from "../types";
+import axios from "../../axios.config";
+import { LOGIN } from "../types";
 
 export const LoginAction = (credentials) => async (dispatch) => {
 	try {
-		const response = await axios.post(URL + "login", credentials);
+		const response = await axios.post("login", credentials);
 		if (response.data) {
 			localStorage.setItem("login", response.data.token.token);
 			dispatch({
