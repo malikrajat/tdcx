@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import Header from "./Header";
 import "../App.css";
-
+import PrivateRoute from "./PrivateRoute";
 import store from "../store";
 
 const Login = lazy(() => import("./Login"));
@@ -21,11 +21,11 @@ const App = () => {
 						<div className="container">
 							<Switch>
 								<Route path="/" component={Login} exact />
-								<Route
+								<PrivateRoute
 									path="/add-task"
 									component={AddNewTask}
 								/>
-								<Route
+								<PrivateRoute
 									path="/dashboard"
 									component={Dashboard}
 								/>

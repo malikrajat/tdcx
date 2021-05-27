@@ -1,5 +1,5 @@
 import axios from "../../axios.config";
-import { URL, TASKLIST, DASHBOARD } from "../types";
+import { TASKLIST, DASHBOARD } from "../types";
 
 export const dashboardAction = () => async (dispatch) => {
 	try {
