@@ -39,6 +39,7 @@ function Dashboard({
 }) {
 	const [modalIsOpen, setIsOpen] = useState(false);
 	const [editTask, setEditTask] = useState("");
+	const [chartData, setChartData] = useState({});
 
 	const openModal = () => {
 		setIsOpen(true);
@@ -57,18 +58,7 @@ function Dashboard({
 		taskListAction();
 	}, []);
 
-	let data = {
-		labels: [],
-		datasets: [
-			{
-				data: [],
-				backgroundColor: [
-					"rgba(54, 162, 235, 0.2)",
-					"rgba(255, 99, 132, 0.2)",
-				],
-			},
-		],
-	};
+	// let data = {};
 
 	const searchData = (e) => {
 		let search = e.target.value;
@@ -85,10 +75,19 @@ function Dashboard({
 	};
 
 	useEffect(() => {
-		data.datasets[0].data = [
-			dashboard.tasksCompleted,
-			dashboard.totalTasks,
-		];
+		let data = {
+			labels: [],
+			datasets: [
+				{
+					data: [dashboard.tasksCompleted, dashboard.totalTasks],
+					backgroundColor: [
+						"rgba(54, 162, 235, 0.2)",
+						"rgba(255, 99, 132, 0.2)",
+					],
+				},
+			],
+		};
+		setChartData(data);
 		let task = JSON.parse(JSON.stringify(taskList));
 		settaskArray(task);
 	}, [taskList, dashboard]);
@@ -177,7 +176,7 @@ function Dashboard({
 						<div className="card button-rd h-100">
 							<div className="card-body">
 								<Pie
-									data={data}
+									data={chartData}
 									options={{ maintainAspectRatio: false }}
 								/>
 							</div>
